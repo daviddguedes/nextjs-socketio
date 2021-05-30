@@ -74,7 +74,7 @@ export default function Home(props) {
           "Content-Type": "application/json",
         },
         body: {
-          message: JSON.stringify(message)
+          message
         },
       });
 
