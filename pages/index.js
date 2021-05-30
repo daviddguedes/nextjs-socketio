@@ -32,7 +32,7 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect({
+    const socket = SocketIOClient.connect('https://notes-three-delta.vercel.app/', {
       path: "/api/socketio",
     });
 
