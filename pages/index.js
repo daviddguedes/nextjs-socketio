@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import axios from 'axios';
-import io from "socket.io-client";
+import SocketIOClient from "socket.io-client";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
 import styles from '../styles/Home.module.css';
@@ -33,7 +33,7 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = io({
+    const socket = SocketIOClient.connect({
       path: "/api/socketio",
     });
 
@@ -67,15 +67,7 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     try {
-      await axios.post("/api/message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: {
-          message
-        },
-      });
+      await axios.post("/api/message", { message });
     } catch (error) {
       console.log('ERROR', error);
     }
