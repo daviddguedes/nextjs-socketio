@@ -3,6 +3,6 @@ export default (req, res) => {
     console.log(res);
     const message = req.body.message;
     res?.socket?.server?.io?.emit("message", message);
-    res.status(201).json(message);
+    res.status(201).json({ message });
   }
 };
