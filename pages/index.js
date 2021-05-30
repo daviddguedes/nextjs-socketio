@@ -3,8 +3,8 @@ import SocketIOClient from "socket.io-client";
 import { Button, Classes, Dialog, Intent, TextArea } from "@blueprintjs/core";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
-import styles from '../styles/Home.module.css'
-import mockmessages from './../mock/messages.json'
+import styles from '../styles/Home.module.css';
+import mockmessages from './../mock/messages.json';
 
 const colors = [
   '#F08080', '#A52A2A', '#5F9EA0', '#D2691E', '#BDB76B', '#556B2F', '#483D8B',
@@ -31,8 +31,10 @@ export default function Home(props) {
     usePortal: true,
   });
 
+  console.log(process.env.BASE_URL);
+
   useEffect(() => {
-    const socket = SocketIOClient.connect(process.env.BASE_URL, {
+    const socket = SocketIOClient.connect({
       path: "/api/socketio",
     });
 
@@ -44,7 +46,6 @@ export default function Home(props) {
     socket.on("message", (message) => {
       messages.push({ id: Math.random(), message });
       setMessages([...messages]);
-      console.log(messages);
       handleClose();
     });
 

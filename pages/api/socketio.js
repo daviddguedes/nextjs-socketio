@@ -8,7 +8,7 @@ export const config = {
 
 export default async (req, res) => {
   if (!res.socket.server.io) {
-    console.log("New Socket.io server...");
+    console.log("Socket io started...");
     const httpServer = res.socket.server;
     const io = new ServerIO(httpServer, {
       path: "/api/socketio",
