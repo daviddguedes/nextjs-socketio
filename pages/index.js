@@ -31,12 +31,12 @@ export default function Home(props) {
     usePortal: true,
   });
 
-  console.log('KEYS', Object.keys(process.env));
-
   useEffect(() => {
     const socket = SocketIOClient.connect({
       path: "/api/socketio",
     });
+
+    console.log('socket', socket);
 
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
