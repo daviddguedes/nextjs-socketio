@@ -73,7 +73,9 @@ export default function Home(props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(message),
+        body: {
+          message: JSON.stringify(message)
+        },
       });
 
       const response = await resp.json();
