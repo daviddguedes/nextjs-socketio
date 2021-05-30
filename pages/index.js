@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import axios from 'axios';
 import SocketIOClient from "socket.io-client";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
@@ -68,7 +69,7 @@ export default function Home(props) {
   const handleAddMessage = async (message) => {
     console.log(JSON.stringify(message));
     try {
-      const resp = await fetch("/api/message", {
+      const response = await axios.post("/api/message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,8 +78,6 @@ export default function Home(props) {
           message
         },
       });
-
-      const response = await resp.json();
 
       console.log(response);
     } catch (error) {
