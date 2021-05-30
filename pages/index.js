@@ -31,7 +31,7 @@ export default function Home(props) {
     usePortal: true,
   });
 
-  console.log(Object.keys(process.env));
+  console.log('KEYS', Object.keys(process.env));
 
   useEffect(() => {
     const socket = SocketIOClient.connect({
