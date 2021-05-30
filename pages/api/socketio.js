@@ -14,6 +14,8 @@ export default async (req, res) => {
       path: "/api/socketio",
     });
     res.socket.server.io = io;
+
+    console.log(res.socket);
   }
   res.end();
 };
