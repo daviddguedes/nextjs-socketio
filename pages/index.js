@@ -33,7 +33,9 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = io("/api/socketio");
+    const socket = io({
+      path: "/api/socketio",
+    });
 
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
