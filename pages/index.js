@@ -32,7 +32,7 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect({
+    const socket = SocketIOClient.connect(process.env.BASE_URL, {
       path: "/api/socketio",
     });
 
