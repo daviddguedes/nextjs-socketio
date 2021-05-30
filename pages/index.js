@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import axios from 'axios';
-import SocketIOClient from "socket.io-client";
+import io from "socket.io-client";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
 import styles from '../styles/Home.module.css';
@@ -21,6 +21,7 @@ export async function getServerSideProps(context) {
 
 export default function Home(props) {
   const [connected, setConnected] = useState(false);
+  const [value, setValue] = useState('');
   const [messages, setMessages] = useState([]);
   const [modalState, setModalState] = useState({
     autoFocus: true,
@@ -32,9 +33,7 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect({
-      path: "/api/socketio",
-    });
+    const socket = io("/api/socketio");
 
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
@@ -49,8 +48,6 @@ export default function Home(props) {
 
     if (socket) return () => socket.disconnect();
   }, []);
-
-  const [value, setValue] = useState('');
 
   const handleOpen = () => {
     setModalState(state => ({ ...state, isOpen: true }));
@@ -67,9 +64,8 @@ export default function Home(props) {
   }
 
   const handleAddMessage = async (message) => {
-    console.log(JSON.stringify(message));
     try {
-      const response = await axios.post("/api/message", {
+      await axios.post("/api/message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,8 +74,6 @@ export default function Home(props) {
           message
         },
       });
-
-      console.log(response);
     } catch (error) {
       console.log('ERROR', error);
     }
