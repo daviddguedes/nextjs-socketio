@@ -1,0 +1,29 @@
+.container {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.grid_message {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: .2rem;
+  padding: .5rem 0;
+}
+
+.item_message {
+  padding: 0 1rem;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  flex: 1 auto;
+  color: #e6e6e6;
+}
+
+.item_message p {
+  margin-top: 1rem; 
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
