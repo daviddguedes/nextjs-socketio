@@ -2,7 +2,7 @@ import { Server as ServerIO } from "socket.io";
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: true,
   },
 };
 
