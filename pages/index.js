@@ -1,10 +1,9 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import SocketIOClient from "socket.io-client";
-import { Button, Classes, Dialog, Intent, TextArea } from "@blueprintjs/core";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
 import styles from '../styles/Home.module.css';
-import mockmessages from './../mock/messages.json';
+import ModalComponent from '../components/ModalComponent';
 
 const colors = [
   '#F08080', '#A52A2A', '#5F9EA0', '#D2691E', '#BDB76B', '#556B2F', '#483D8B',
@@ -14,8 +13,8 @@ const colors = [
 export async function getServerSideProps(context) {
   return {
     props: {
-      messages: mockmessages,
-    },
+      messages: []
+    }
   }
 }
 
@@ -32,11 +31,9 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect('https://notes-three-delta.vercel.app/', {
+    const socket = SocketIOClient.connect({
       path: "/api/socketio",
     });
-
-    console.log('socket', socket);
 
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
@@ -69,13 +66,22 @@ export default function Home(props) {
   }
 
   const handleAddMessage = async (message) => {
-    const resp = await fetch("/api/message", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
-    });
+    console.log(JSON.stringify(message));
+    try {
+      const resp = await fetch("/api/message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
+
+      const response = await resp.json();
+
+      console.log(response);
+    } catch (error) {
+      console.log('ERROR', error);
+    }
   }
 
   return (
@@ -100,26 +106,12 @@ export default function Home(props) {
         ))}
       </div>
 
-      <Dialog
-        icon="plus"
-        onClose={handleClose}
-        title="Nova Nota"
-        {...modalState}
-      >
-        <div className={Classes.DIALOG_BODY}>
-          <TextArea
-            className={[Classes.INPUT, Classes.TEXT_LARGE, Classes.FILL]}
-            growVertically={false}
-            large={true}
-            intent={Intent.PRIMARY}
-            maxLength="150"
-            onChange={handleChange}
-            value={value}
-          />
-          <Button onClick={() => handleAddMessage(value)} icon="plus" text="Salvar" />
-        </div>
-
-      </Dialog>
+      <ModalComponent
+        handleClose={handleClose}
+        modalState={modalState}
+        handleChange={handleChange}
+        value={value}
+        handleButtonAction={handleAddMessage} />
 
     </div>
   )
