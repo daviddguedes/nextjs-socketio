@@ -1,10 +1,10 @@
 import { Server as ServerIO } from "socket.io";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 export default async (req, res) => {
   if (!res.socket.server.io) {
