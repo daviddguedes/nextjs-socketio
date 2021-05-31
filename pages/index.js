@@ -67,7 +67,8 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     try {
-      await axios.post("/api/message", {'Content-Type': 'application/json'}, { message });
+      const response = await axios.post("/api/message", { message });
+      console.log(response);
     } catch (error) {
       console.log('ERROR', error);
     }
