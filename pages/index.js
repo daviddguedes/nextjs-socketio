@@ -32,11 +32,11 @@ export default function Home(props) {
     usePortal: true,
   });
 
-  const socket = SocketIOClient.connect({
-    path: "/api/socketio",
-  });
-
   useEffect(() => {
+    const socket = SocketIOClient.connect("https://notes-three-delta.vercel.app", {
+      path: "/api/socketio",
+    });
+
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
       setConnected(true);
@@ -49,7 +49,7 @@ export default function Home(props) {
     });
 
     if (socket) return () => socket.disconnect();
-  }, [socket]);
+  }, []);
 
   const handleOpen = () => {
     setModalState(state => ({ ...state, isOpen: true }));
