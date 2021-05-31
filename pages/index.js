@@ -33,7 +33,7 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect("https://notes-three-delta.vercel.app", {
+    const socket = SocketIOClient.connect({
       path: "/api/socketio",
     });
 
@@ -67,7 +67,7 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     try {
-      await axios.post("/api/message", { message });
+      await axios.post("/api/message", {'Content-Type': 'application/json'}, { message });
     } catch (error) {
       console.log('ERROR', error);
     }
