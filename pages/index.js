@@ -67,7 +67,7 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     try {
-      const response = await axios.post("https://notes-three-delta.vercel.app/api/message", { message });
+      const response = await axios.post("/api/message", { message });
       console.log(response);
     } catch (error) {
       console.log('ERROR', error);
