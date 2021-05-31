@@ -32,11 +32,11 @@ export default function Home(props) {
     usePortal: true,
   });
 
-  useEffect(() => {
-    const socket = SocketIOClient.connect({
-      path: "/api/socketio",
-    });
+  const socket = SocketIOClient.connect({
+    path: "/api/socketio",
+  });
 
+  useEffect(() => {
     socket.on("connect", () => {
       console.log("SOCKET CONNECTED!", socket.id);
       setConnected(true);
@@ -49,7 +49,7 @@ export default function Home(props) {
     });
 
     if (socket) return () => socket.disconnect();
-  }, []);
+  }, [socket]);
 
   const handleOpen = () => {
     setModalState(state => ({ ...state, isOpen: true }));
