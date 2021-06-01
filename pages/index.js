@@ -1,26 +1,29 @@
 import Head from 'next/head';
-import axios from 'axios';
-import SocketIOClient from "socket.io-client";
+import Ably from 'ably';
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
 import styles from '../styles/Home.module.css';
 import ModalComponent from '../components/ModalComponent';
+
+export async function getStaticProps() {
+  const key = process.env.ABLY_KEY;
+
+  return {
+    props: {
+      apiKey: key
+    }
+  }
+}
 
 const colors = [
   '#F08080', '#A52A2A', '#5F9EA0', '#D2691E', '#BDB76B', '#556B2F', '#483D8B',
   '#4B0082', '#BC8F8F', '#FA8072', '#008080', '#2E8B57', '#9370DB', '#778899'
 ];
 
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      messages: []
-    }
-  }
-}
-
 export default function Home(props) {
-  const [connected, setConnected] = useState(false);
+  const ablyClient = new Ably.Realtime(props.apiKey);
+  const channel = ablyClient.channels.get('app-notes');
+
   const [value, setValue] = useState('');
   const [messages, setMessages] = useState([]);
   const [modalState, setModalState] = useState({
@@ -33,22 +36,12 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    const socket = SocketIOClient.connect({
-      path: "/api/socketio",
-    });
+    channel.publish('notes', 'hello');
 
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
-      setConnected(true);
-    });
-
-    socket.on("message", (message) => {
-      messages.push({ id: Math.random(), message });
+    channel.subscribe('notes', function (message) {
+      messages.push({ id: Math.random(), message: message.data });
       setMessages([...messages]);
-      handleClose();
     });
-
-    if (socket) return () => socket.disconnect();
   }, []);
 
   const handleOpen = () => {
@@ -67,8 +60,8 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     try {
-      const response = await axios.post("/api/message", { message });
-      console.log(response);
+      channel.publish('notes', message);
+      handleClose();
     } catch (error) {
       console.log('ERROR', error);
     }
