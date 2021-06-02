@@ -1,16 +1,27 @@
 import Head from 'next/head';
-import Ably from 'ably';
+import firebase from "firebase/app";
+import "firebase/database";
 import { useEffect, useState } from 'react';
 import NavTop from '../components/NavTop';
 import styles from '../styles/Home.module.css';
 import ModalComponent from '../components/ModalComponent';
 
+
 export async function getStaticProps() {
-  const key = process.env.ABLY_KEY;
+  const firebaseConfig = {
+    apiKey: process.env.API_KEY,
+    authDomain: `app-askut.firebaseapp.com`,
+    databaseURL: "https://app-askut-default-rtdb.firebaseio.com",
+    projectId: "app-askut",
+    storageBucket: `app-askut.appspot.com`,
+    messagingSenderId: "514838385270",
+    appId: "1:514838385270:web:1bcc09c09107de77d50557",
+    measurementId: "G-W5E14NHNN6"
+  };
 
   return {
     props: {
-      apiKey: key
+      firebaseConfig
     }
   }
 }
@@ -21,9 +32,6 @@ const colors = [
 ];
 
 export default function Home(props) {
-  const ablyClient = new Ably.Realtime(props.apiKey);
-  const channel = ablyClient.channels.get('app-notes');
-
   const [value, setValue] = useState('');
   const [messages, setMessages] = useState([]);
   const [modalState, setModalState] = useState({
@@ -36,13 +44,21 @@ export default function Home(props) {
   });
 
   useEffect(() => {
-    channel.publish('notes', 'hello');
+    firebase.initializeApp(props.firebaseConfig);
 
-    channel.subscribe('notes', function (message) {
-      messages.push({ id: Math.random(), message: message.data });
-      setMessages([...messages]);
+    const db = firebase.database().ref("notes");
+    db.on('value', (snapshot) => {
+      const data = snapshot.val();
+      const notes = [];
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          const element = { id: key, datetime: data[key].datetime, message: data[key].text };
+          notes.push(element);
+          setMessages([...notes]);
+        });
+      }
     });
-  }, []);
+  }, [props.firebaseConfig]);
 
   const handleOpen = () => {
     setModalState(state => ({ ...state, isOpen: true }));
@@ -59,12 +75,10 @@ export default function Home(props) {
   }
 
   const handleAddMessage = async (message) => {
-    try {
-      channel.publish('notes', message);
-      handleClose();
-    } catch (error) {
-      console.log('ERROR', error);
-    }
+    firebase.database().ref('notes/' + new Date().getTime()).set({
+      datetime: new Date().toLocaleString(),
+      text: message,
+    }).finally(() => handleClose());
   }
 
   return (
@@ -85,6 +99,7 @@ export default function Home(props) {
               backgroundColor: colors[Math.floor(Math.random() * colors.length)]
             }} key={val.id}>
             <p>{val.message}</p>
+            <span className={styles.span_datetime}>{val.datetime}</span>
           </div>
         ))}
       </div>

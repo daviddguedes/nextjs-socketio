@@ -27,3 +27,8 @@
   margin-bottom: 1rem;
   font-size: 1.2rem;
 }
+
+.span_datetime {
+  display: block;
+  margin-bottom: 1rem;
+}
