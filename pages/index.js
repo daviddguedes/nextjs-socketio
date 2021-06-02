@@ -46,7 +46,7 @@ export default function Home(props) {
   useEffect(() => {
     firebase.initializeApp(props.firebaseConfig);
 
-    const db = firebase.database().ref("notes");
+    const db = firebase.database().ref("notes").orderByChild('datetime');
     db.on('value', (snapshot) => {
       const data = snapshot.val();
       const notes = [];
