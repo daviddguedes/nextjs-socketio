@@ -76,7 +76,7 @@ export default function Home(props) {
 
   const handleAddMessage = async (message) => {
     firebase.database().ref('notes/' + new Date().getTime()).set({
-      datetime: new Date(),
+      datetime: new Date().toLocaleDateString(),
       text: message,
     }).finally(() => handleClose());
   }
